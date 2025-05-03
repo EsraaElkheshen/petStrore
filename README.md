@@ -7,7 +7,7 @@
 - [APICoverage](#aPICoverage)
 - [TestCoverage](#testCoverage)
 - [Requirements](#requirements)
--[HowToUse](#howToUse)
+- [HowToUse](#howToUse)
 - [TestedWith](#testedWith)
 
 ## Introduction
@@ -19,11 +19,15 @@
 ![Local testing execution example](PetStore.gif)
 
 ## Environment Setup
-1.Open Postman.
-2.Import both:
+
+1. Open Postman.
+
+2. Import both:
 -	Collection: Petstore.postman_collection.json.
 -	Environment: PetStore_Enviroment.postman_environment.json.
-3.Select PetStore_Enviroment as the active environment.
+
+3. Select PetStore_Enviroment as the active environment.
+
 4.Run the collection manually or using the Collection Runner.
 
 🚀 API Coverage
@@ -50,7 +54,7 @@ Update User	PUT	/v2/user/{username}
 Delete User	DELETE	/v2/user/{username}
 Login/Logout	GET	/v2/user/login
 
-✅ Test Coverage
+✅ TestCoverage
 Each request includes:
 - Status Code validation (e.g., 200 OK)
 - Response Time check (<1000ms)
@@ -63,7 +67,7 @@ Each request includes:
 - **Newman** (optional, for running tests from command line)
 
 
-📦 How to Use
+📦 HowtoUse
 Run Individual Tests
 - Expand the collection in Postman.
 - Send any request (e.g., “1.1 Create New Pet”) and view the Test Results tab.
