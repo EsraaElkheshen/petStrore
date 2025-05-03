@@ -1,0 +1,2703 @@
+{
+	"info": {
+		"_postman_id": "0b0cb2ef-3ca8-4596-8f0e-2078c904eb44",
+		"name": "Petstore",
+		"description": "<img src=\"https://content.pstmn.io/bacd2d15-cedd-452a-a388-e4287a2bd7af/aW1hZ2UucG5n\" width=\"225\" height=\"225\">\n\n# _**Features**_\n\n# 🐾 Pet API\n\n---\n\n## 🛒 Store API\n\n---\n\n## 👤 User API",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "13755881",
+		"_collection_link": "https://www.postman.com/esraaelkheshen53/workspace/rest-course/collection/13755881-0b0cb2ef-3ca8-4596-8f0e-2078c904eb44?action=share&source=collection_link&creator=13755881"
+	},
+	"item": [
+		{
+			"name": "1.Pet",
+			"item": [
+				{
+					"name": "1.1 Create New Pet",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"function generateRandomName() {\r",
+									"  const getRandomChar = () => String.fromCharCode(97 + Math.floor(Math.random() * 26)); // a-z\r",
+									"  const getPart = (capitalize = false) => {\r",
+									"    let part = '';\r",
+									"    for (let i = 0; i < 4; i++) {\r",
+									"      part += getRandomChar();\r",
+									"    }\r",
+									"    return capitalize ? part.charAt(0).toUpperCase() + part.slice(1) : part;\r",
+									"  };\r",
+									"\r",
+									"  const part1 = getPart(true);   // Capitalized\r",
+									"  const part2 = getPart();       // Lowercase\r",
+									"  const part3 = getPart();       // Lowercase\r",
+									"  const part4 = getPart(true);   // Capitalized\r",
+									"\r",
+									"  return `${part1} ${part2} ${part3} ${part4}`;\r",
+									"}\r",
+									"console.log(generateRandomName());\r",
+									"pm.collectionVariables.set(\"tagName\",generateRandomName())\r",
+									"\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"//Validate Response  Code\r",
+									"pm.test(\"[1.1] TC01 Validate Response Code For Creating New Pet is 200\", function () {\r",
+									"\tpm.expect(pm.response.code).to.have.equal(200);\r",
+									"});\r",
+									"\r",
+									"//Validate Response Message\r",
+									"pm.test(\"[1.1] TC02 Validate Response Message For Creating New Pet is Ok\", function () {\r",
+									"    pm.expect(pm.response.status).to.have.equal(\"OK\");\r",
+									"});\r",
+									"\r",
+									"//Validate Response time is less than 2000ms\r",
+									"pm.test(\"[1.1] TC03 Validate Response Time is less Than 1000ms\", function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(1000);\r",
+									"});\r",
+									"\r",
+									"//Validate response schema\r",
+									"pm.test(\"[1.1] TC04 Validate Create Pet Response Schema is Valid\", function () {\r",
+									"    var schema= {\r",
+									"  \"type\": \"object\",\r",
+									"  \"properties\": {\r",
+									"    \"id\": {\r",
+									"      \"type\": \"integer\"\r",
+									"    },\r",
+									"    \"category\": {\r",
+									"      \"type\": \"object\",\r",
+									"      \"properties\": {\r",
+									"        \"id\": {\r",
+									"          \"type\": \"integer\"\r",
+									"        },\r",
+									"        \"name\": {\r",
+									"          \"type\": \"string\"\r",
+									"        }\r",
+									"      },\r",
+									"      \"required\": [\r",
+									"        \"id\",\r",
+									"        \"name\"\r",
+									"      ]\r",
+									"    },\r",
+									"    \"name\": {\r",
+									"      \"type\": \"string\"\r",
+									"    },\r",
+									"    \"photoUrls\": {\r",
+									"      \"type\": \"array\",\r",
+									"      \"items\": [\r",
+									"        {\r",
+									"          \"type\": \"string\"\r",
+									"        }\r",
+									"      ]\r",
+									"    },\r",
+									"    \"tags\": {\r",
+									"      \"type\": \"array\",\r",
+									"      \"items\": [\r",
+									"        {\r",
+									"          \"type\": \"object\",\r",
+									"          \"properties\": {\r",
+									"            \"id\": {\r",
+									"              \"type\": \"integer\"\r",
+									"            },\r",
+									"            \"name\": {\r",
+									"              \"type\": \"string\"\r",
+									"            }\r",
+									"          },\r",
+									"          \"required\": [\r",
+									"            \"id\",\r",
+									"            \"name\"\r",
+									"          ]\r",
+									"        }\r",
+									"      ]\r",
+									"    },\r",
+									"    \"status\": {\r",
+									"      \"type\": \"string\"\r",
+									"    }\r",
+									"  },\r",
+									"  \"required\": [\r",
+									"    \"id\",\r",
+									"    \"category\",\r",
+									"    \"name\",\r",
+									"    \"photoUrls\",\r",
+									"    \"tags\",\r",
+									"    \"status\"\r",
+									"  ]\r",
+									"}\r",
+									"pm.response.to.have.jsonSchema(schema);\r",
+									"});\r",
+									"\r",
+									"//validate Data to be expected\r",
+									"pm.test(\"[1.1] TC05 Validate pet name return in response as expected\",function(){\r",
+									"    pm.expect(pm.response.json().category.name).to.equal(JSON.parse(pm.request.body.raw).category.name);\r",
+									"});\r",
+									"\r",
+									"//validate Status to be expected\r",
+									"pm.test(\"[1.1] TC06 Validate Status  in response as expected\",function(){\r",
+									"    pm.expect(pm.response.json().status).to.equal(\"available\");\r",
+									"});\r",
+									"\r",
+									"//validate tag name to be expected\r",
+									"pm.test(\"[1.1] TC07 Validate tag name in response as expected\",function(){\r",
+									"    pm.expect(pm.response.json().tags[0].name).to.equal(JSON.parse(pm.request.body.raw).tags[0].name);\r",
+									"});\r",
+									"\r",
+									"//validate name to be expected\r",
+									"pm.test(\"[1.1] TC08 Validate name in response as expected\",function(){\r",
+									"    pm.expect(pm.response.json().name).to.equal(\"doggie\");\r",
+									"});\r",
+									"\r",
+									"//Validate Response Size is less than 2000ms\r",
+									"pm.test(\"[1.1] TC09 Validate Response Size is less than 1000ms\", function () {\r",
+									"    pm.expect(pm.response.responseSize).to.be.below(1000);\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"id\": 0,\r\n  \"category\": {\r\n    \"id\": 0,\r\n    \"name\": \"{{$randomFirstName}}\"\r\n  },\r\n  \"name\": \"doggie\",\r\n  \"photoUrls\": [\r\n    \"string\"\r\n  ],\r\n  \"tags\": [\r\n    {\r\n      \"id\": 0,\r\n      \"name\": \"{{tagName}}\"\r\n    }\r\n  ],\r\n  \"status\": \"available\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/v2/pet",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"v2",
+								"pet"
+							]
+						},
+						"description": "#### **Add New Pet**\n\n**Generated from** cURL: curl -X 'POST'  \n'[https://petstore.swagger.io/v2/pet'](https://petstore.swagger.io/v2/pet')  \n\\-H 'accept: application/json'  \n\\-H 'Content-Type: application/json'  \n\\-d '{  \n\"id\": 0,  \n\"category\": {  \n\"id\": 0,  \n\"name\": \"string\"  \n},  \n\"name\": \"doggie\",  \n\"photoUrls\": \\[  \n\"string\"  \n\\],  \n\"tags\": \\[  \n{  \n\"id\": 0,  \n\"name\": \"string\"  \n}  \n\\],  \n\"status\": \"available\"  \n}'"
+					},
+					"response": []
+				},
+				{
+					"name": "1.2 Get Pet By Id",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"//Validate Response Status Code\r",
+									"pm.test(\"[1.2] TC01 Validate Response Code For Get New Pet is 200\", function () {\r",
+									"    pm.expect(pm.response.code).to.have.equal(200);\r",
+									"});\r",
+									"\r",
+									"//Validate Response Message\r",
+									"pm.test(\"[1.2] TC02 Validate Response Message For get New Pet is Ok\", function () {\r",
+									"     pm.expect(pm.response.status).to.have.equal(\"OK\");\r",
+									"});\r",
+									"\r",
+									"//Validate Response time is less than 2000ms\r",
+									"pm.test(\"[1.2] TC03 Validate Response Time is less Than 1000ms\", function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(3000);\r",
+									"});\r",
+									"\r",
+									"//Validate Response Size is less than 2000ms\r",
+									"pm.test(\"[1.2] TC04 Validate Response Size is less than 1000ms\", function () {\r",
+									"    pm.expect(pm.response.responseSize).to.be.below(1000);\r",
+									"});\r",
+									"\r",
+									"//validate name to be expected\r",
+									"pm.test(\"[1.2] TC05 Validate name in response as expected\",function(){\r",
+									"    pm.expect(pm.response.json().name).to.equal(\"doggie\");\r",
+									"});\r",
+									"\r",
+									"//Validate response schema\r",
+									"pm.test(\"[1.2] TC06 Validate Get Pet Response Schema is Valid\", function () {\r",
+									"    var schema= {\r",
+									"  \"type\": \"object\",\r",
+									"  \"properties\": {\r",
+									"    \"id\": {\r",
+									"      \"type\": \"integer\"\r",
+									"    },\r",
+									"    \"category\": {\r",
+									"      \"type\": \"object\",\r",
+									"      \"properties\": {\r",
+									"        \"id\": {\r",
+									"          \"type\": \"integer\"\r",
+									"        },\r",
+									"        \"name\": {\r",
+									"          \"type\": \"string\"\r",
+									"        }\r",
+									"      },\r",
+									"      \"required\": [\r",
+									"        \"id\",\r",
+									"        \"name\"\r",
+									"      ]\r",
+									"    },\r",
+									"    \"name\": {\r",
+									"      \"type\": \"string\"\r",
+									"    },\r",
+									"    \"photoUrls\": {\r",
+									"      \"type\": \"array\",\r",
+									"      \"items\": [\r",
+									"        {\r",
+									"          \"type\": \"string\"\r",
+									"        }\r",
+									"      ]\r",
+									"    },\r",
+									"    \"tags\": {\r",
+									"      \"type\": \"array\",\r",
+									"      \"items\": [\r",
+									"        {\r",
+									"          \"type\": \"object\",\r",
+									"          \"properties\": {\r",
+									"            \"id\": {\r",
+									"              \"type\": \"integer\"\r",
+									"            },\r",
+									"            \"name\": {\r",
+									"              \"type\": \"string\"\r",
+									"            }\r",
+									"          },\r",
+									"          \"required\": [\r",
+									"            \"id\",\r",
+									"            \"name\"\r",
+									"          ]\r",
+									"        }\r",
+									"      ]\r",
+									"    },\r",
+									"    \"status\": {\r",
+									"      \"type\": \"string\"\r",
+									"    }\r",
+									"  },\r",
+									"  \"required\": [\r",
+									"    \"id\",\r",
+									"    \"category\",\r",
+									"    \"name\",\r",
+									"    \"photoUrls\",\r",
+									"    \"tags\",\r",
+									"    \"status\"\r",
+									"  ]\r",
+									"}\r",
+									"pm.response.to.have.jsonSchema(schema);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "accept",
+								"value": "application/json"
+							},
+							{
+								"key": "api_key",
+								"value": "client_id"
+							}
+						],
+						"url": {
+							"raw": "{{URL}}/v2/pet/{{petId}}",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"v2",
+								"pet",
+								"{{petId}}"
+							]
+						},
+						"description": "#### **Get Pet After Adding New Pet**\n\n**Generated from** : curl -X 'GET'  \n'[https://petstore.swagger.io/v2/pet/9223372036854775807'](https://petstore.swagger.io/v2/pet/9223372036854775807')  \n\\-H 'accept: application/json'  \n\\-H 'api_key: client_id'"
+					},
+					"response": []
+				},
+				{
+					"name": "1.3 Update Pet",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"//Validate Response  Code\r",
+									"pm.test(\"[1.3] TC01 Validate Response Code For Creating New Pet is 200\", function () {\r",
+									"\tpm.expect(pm.response.code).to.have.equal(200);\r",
+									"});\r",
+									"\r",
+									"//Validate Response Message\r",
+									"pm.test(\"[1.3] TC02 Validate Response Message For Creating New Pet is Ok\", function () {\r",
+									"    pm.expect(pm.response.status).to.have.equal(\"OK\");\r",
+									"});\r",
+									"\r",
+									"//Validate Response time is less than 2000ms\r",
+									"pm.test(\"[1.3] TC03 Validate Response Time is less Than 1000ms\", function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(1000);\r",
+									"});\r",
+									"\r",
+									"//Validate response schema\r",
+									"pm.test(\"[1.3] TC04 Validate Update Existing Pet Response Schema is Valid\", function () {\r",
+									"    var schema= {\r",
+									"  \"type\": \"object\",\r",
+									"  \"properties\": {\r",
+									"    \"id\": {\r",
+									"      \"type\": \"integer\"\r",
+									"    },\r",
+									"    \"category\": {\r",
+									"      \"type\": \"object\",\r",
+									"      \"properties\": {\r",
+									"        \"id\": {\r",
+									"          \"type\": \"integer\"\r",
+									"        },\r",
+									"        \"name\": {\r",
+									"          \"type\": \"string\"\r",
+									"        }\r",
+									"      },\r",
+									"      \"required\": [\r",
+									"        \"id\",\r",
+									"        \"name\"\r",
+									"      ]\r",
+									"    },\r",
+									"    \"name\": {\r",
+									"      \"type\": \"string\"\r",
+									"    },\r",
+									"    \"photoUrls\": {\r",
+									"      \"type\": \"array\",\r",
+									"      \"items\": [\r",
+									"        {\r",
+									"          \"type\": \"string\"\r",
+									"        }\r",
+									"      ]\r",
+									"    },\r",
+									"    \"tags\": {\r",
+									"      \"type\": \"array\",\r",
+									"      \"items\": [\r",
+									"        {\r",
+									"          \"type\": \"object\",\r",
+									"          \"properties\": {\r",
+									"            \"id\": {\r",
+									"              \"type\": \"integer\"\r",
+									"            },\r",
+									"            \"name\": {\r",
+									"              \"type\": \"string\"\r",
+									"            }\r",
+									"          },\r",
+									"          \"required\": [\r",
+									"            \"id\",\r",
+									"            \"name\"\r",
+									"          ]\r",
+									"        }\r",
+									"      ]\r",
+									"    },\r",
+									"    \"status\": {\r",
+									"      \"type\": \"string\"\r",
+									"    }\r",
+									"  },\r",
+									"  \"required\": [\r",
+									"    \"id\",\r",
+									"    \"category\",\r",
+									"    \"name\",\r",
+									"    \"photoUrls\",\r",
+									"    \"tags\",\r",
+									"    \"status\"\r",
+									"  ]\r",
+									"}\r",
+									"pm.response.to.have.jsonSchema(schema);\r",
+									"});\r",
+									"\r",
+									"//validate Data to be expected\r",
+									"pm.test(\"[1.3] TC05 Validate pet name return in response as expected\",function(){\r",
+									"    pm.expect(pm.response.json().category.name).to.equal(JSON.parse(pm.request.body.raw).category.name);\r",
+									"});\r",
+									"\r",
+									"//validate Status to be expected\r",
+									"pm.test(\"[1.3] TC06 Validate Status  in response as expected\",function(){\r",
+									"    pm.expect(pm.response.json().status).to.equal(\"available\");\r",
+									"});\r",
+									"\r",
+									"//validate tag name to be expected\r",
+									"pm.test(\"[1.3] TC07 Validate tag name in response as expected\",function(){\r",
+									"    pm.expect(pm.response.json().tags[0].name).to.equal(JSON.parse(pm.request.body.raw).tags[0].name);\r",
+									"});\r",
+									"\r",
+									"//validate name to be expected\r",
+									"pm.test(\"[1.3] TC08 Validate name in response as expected\",function(){\r",
+									"    pm.expect(pm.response.json().name).to.equal(\"doggie\");\r",
+									"});\r",
+									"\r",
+									"//Validate Response Size is less than 2000ms\r",
+									"pm.test(\"[1.3] TC09 Validate Response Size is less than 1000ms\", function () {\r",
+									"    pm.expect(pm.response.responseSize).to.be.below(1000);\r",
+									"});\r",
+									"\r",
+									"\r",
+									"\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"function generateRandomName() {\r",
+									"  const getRandomChar = () => String.fromCharCode(97 + Math.floor(Math.random() * 26)); // a-z\r",
+									"  const getPart = (capitalize = false) => {\r",
+									"    let part = '';\r",
+									"    for (let i = 0; i < 4; i++) {\r",
+									"      part += getRandomChar();\r",
+									"    }\r",
+									"    return capitalize ? part.charAt(0).toUpperCase() + part.slice(1) : part;\r",
+									"  };\r",
+									"\r",
+									"  const part1 = getPart(true);   // Capitalized\r",
+									"  const part2 = getPart();       // Lowercase\r",
+									"  const part3 = getPart();       // Lowercase\r",
+									"  const part4 = getPart(true);   // Capitalized\r",
+									"\r",
+									"  return `${part1} ${part2} ${part3} ${part4}`;\r",
+									"}\r",
+									"console.log(generateRandomName());\r",
+									"pm.collectionVariables.set(\"tagName\",generateRandomName())\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"id\": 0,\r\n  \"category\": {\r\n    \"id\": 0,\r\n    \"name\": \"{{$randomLastName}}\"\r\n  },\r\n  \"name\": \"doggie\",\r\n  \"photoUrls\": [\r\n    \"string\"\r\n  ],\r\n  \"tags\": [\r\n    {\r\n      \"id\": 0,\r\n      \"name\": \"{{tagName}}\"\r\n    }\r\n  ],\r\n  \"status\": \"available\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/v2/pet",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"v2",
+								"pet"
+							]
+						},
+						"description": "**Update An Existing Pet**\n\n**Generated from** cURL: curl -X 'PUT'  \n'[https://petstore.swagger.io/v2/pet'](https://petstore.swagger.io/v2/pet')  \n\\-H 'accept: application/json'  \n\\-H 'Content-Type: application/json'  \n\\-d '{  \n\"id\": 0,  \n\"category\": {  \n\"id\": 0,  \n\"name\": \"string\"  \n},  \n\"name\": \"doggie\",  \n\"photoUrls\": \\[  \n\"string\"  \n\\],  \n\"tags\": \\[  \n{  \n\"id\": 0,  \n\"name\": \"string\"  \n}  \n\\],  \n\"status\": \"available\"  \n}'  \nRequ"
+					},
+					"response": []
+				},
+				{
+					"name": "1.4 Get Pet By Id",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"//Validate Response Status Code\r",
+									"pm.test(\"[1.4] TC01 Validate Response Code For Get Pet After Updating is 200\", function () {\r",
+									"    pm.expect(pm.response.code).to.have.equal(200);\r",
+									"});\r",
+									"\r",
+									"//Validate Response Message\r",
+									"pm.test(\"[1.4] TC02 Validate Response Message For get Pet After Updating is Ok\", function () {\r",
+									"     pm.expect(pm.response.status).to.have.equal(\"OK\");\r",
+									"});\r",
+									"\r",
+									"//Validate Response time is less than 2000ms\r",
+									"pm.test(\"[1.4] TC03 Validate Response Time is less Than 1000ms\", function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(3000);\r",
+									"});\r",
+									"\r",
+									"//Validate Response Size is less than 2000ms\r",
+									"pm.test(\"[1.4] TC04 Validate Response Size is less than 1000ms\", function () {\r",
+									"    pm.expect(pm.response.responseSize).to.be.below(1000);\r",
+									"});\r",
+									"\r",
+									"//validate name to be expected\r",
+									"pm.test(\"[1.4] TC05 Validate name in response as expected\",function(){\r",
+									"    pm.expect(pm.response.json().name).to.equal(\"doggie\");\r",
+									"});\r",
+									"\r",
+									"//Validate response schema\r",
+									"pm.test(\"[1.4] TC06 Validate Get Pet Response Schema is Valid\", function () {\r",
+									"    var schema= {\r",
+									"  \"type\": \"object\",\r",
+									"  \"properties\": {\r",
+									"    \"id\": {\r",
+									"      \"type\": \"integer\"\r",
+									"    },\r",
+									"    \"category\": {\r",
+									"      \"type\": \"object\",\r",
+									"      \"properties\": {\r",
+									"        \"id\": {\r",
+									"          \"type\": \"integer\"\r",
+									"        },\r",
+									"        \"name\": {\r",
+									"          \"type\": \"string\"\r",
+									"        }\r",
+									"      },\r",
+									"      \"required\": [\r",
+									"        \"id\",\r",
+									"        \"name\"\r",
+									"      ]\r",
+									"    },\r",
+									"    \"name\": {\r",
+									"      \"type\": \"string\"\r",
+									"    },\r",
+									"    \"photoUrls\": {\r",
+									"      \"type\": \"array\",\r",
+									"      \"items\": [\r",
+									"        {\r",
+									"          \"type\": \"string\"\r",
+									"        }\r",
+									"      ]\r",
+									"    },\r",
+									"    \"tags\": {\r",
+									"      \"type\": \"array\",\r",
+									"      \"items\": [\r",
+									"        {\r",
+									"          \"type\": \"object\",\r",
+									"          \"properties\": {\r",
+									"            \"id\": {\r",
+									"              \"type\": \"integer\"\r",
+									"            },\r",
+									"            \"name\": {\r",
+									"              \"type\": \"string\"\r",
+									"            }\r",
+									"          },\r",
+									"          \"required\": [\r",
+									"            \"id\",\r",
+									"            \"name\"\r",
+									"          ]\r",
+									"        }\r",
+									"      ]\r",
+									"    },\r",
+									"    \"status\": {\r",
+									"      \"type\": \"string\"\r",
+									"    }\r",
+									"  },\r",
+									"  \"required\": [\r",
+									"    \"id\",\r",
+									"    \"category\",\r",
+									"    \"name\",\r",
+									"    \"photoUrls\",\r",
+									"    \"tags\",\r",
+									"    \"status\"\r",
+									"  ]\r",
+									"}\r",
+									"pm.response.to.have.jsonSchema(schema);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "accept",
+								"value": "application/json"
+							},
+							{
+								"key": "api_key",
+								"value": "client_id"
+							}
+						],
+						"url": {
+							"raw": "{{URL}}/v2/pet/{{petId}}",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"v2",
+								"pet",
+								"{{petId}}"
+							]
+						},
+						"description": "#### **Get Pet After Adding New Pet**\n\n**Generated from** cURL: curl -X 'GET'  \n'[https://petstore.swagger.io/v2/pet/9223372036854775807'](https://petstore.swagger.io/v2/pet/9223372036854775807')  \n\\-H 'accept: application/json'  \n\\-H 'api_key: client_id'"
+					},
+					"response": []
+				},
+				{
+					"name": "1.5 Delete Pet",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"//Validate Response Status Code\r",
+									"pm.test(\"[1.5] TC01 Validate Response Code For Delete New Pet is 200\", function () {\r",
+									"    pm.expect(pm.response.code).to.have.equal(200);\r",
+									"});\r",
+									"\r",
+									"//Validate Response Message\r",
+									"pm.test(\"[1.5] TC02 Validate Response Message For Delete New Pet is Ok\", function () {\r",
+									"     pm.expect(pm.response.status).to.have.equal(\"OK\");\r",
+									"});\r",
+									"\r",
+									"//Validate Response time is less than 2000ms\r",
+									"pm.test(\"[1.5] TC03 Validate Response Time is less Than 1000ms\", function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(3000);\r",
+									"});\r",
+									"\r",
+									"//Validate Response Size is less than 2000ms\r",
+									"pm.test(\"[1.5] TC04 Validate Response Size is less than 1000ms\", function () {\r",
+									"    pm.expect(pm.response.responseSize).to.be.below(1000);\r",
+									"});\r",
+									"\r",
+									"//validate Code to be expected\r",
+									"pm.test(\"[1.5] TC05 Validate Code in response as expected\",function(){\r",
+									"    pm.expect(pm.response.json().code).to.equal(200);\r",
+									"});\r",
+									"\r",
+									"//validate type to be expected\r",
+									"pm.test(\"[1.5] TC06 Validate Type in response as expected\",function(){\r",
+									"    pm.expect(pm.response.json().type).to.equal(\"unknown\");\r",
+									"});\r",
+									"\r",
+									"//validate message to be expected\r",
+									"pm.test(\"[1.5] TC06 Validate Message in response as expected\",function(){\r",
+									"    pm.expect(pm.response.json().message).to.equal(pm.collectionVariables.get(\"petId\"));\r",
+									"});\r",
+									"\r",
+									"//Validate response schema\r",
+									"pm.test(\"[1.5] TC07 Validate Delete Pet Response Schema is Valid\", function () {\r",
+									"    var schema= {\r",
+									"  \"type\": \"object\",\r",
+									"  \"properties\": {\r",
+									"    \"code\": {\r",
+									"      \"type\": \"integer\"\r",
+									"    },\r",
+									"    \"type\": {\r",
+									"      \"type\": \"string\"\r",
+									"    },\r",
+									"    \"message\": {\r",
+									"      \"type\": \"string\"\r",
+									"    }\r",
+									"  },\r",
+									"  \"required\": [\r",
+									"    \"code\",\r",
+									"    \"type\",\r",
+									"    \"message\"\r",
+									"  ]\r",
+									"}\r",
+									"pm.response.to.have.jsonSchema(schema);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{URL}}/v2/pet/{{petId}}",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"v2",
+								"pet",
+								"{{petId}}"
+							]
+						},
+						"description": "**Delete Pet**\n\n**Generated from** cURL: curl -X 'DELETE'  \n'[https://petstore.swagger.io/v2/pet/9223372036854775807'](https://petstore.swagger.io/v2/pet/9223372036854775807')  \n\\-H 'accept: application/json'"
+					},
+					"response": []
+				},
+				{
+					"name": "1.6 Get Pet By",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"//Validate Response Status Code\r",
+									"pm.test(\"[1.6] TC01 Validate Response Code For Get Pet is 404\", function () {\r",
+									"    pm.expect(pm.response.code).to.have.equal(404);\r",
+									"});\r",
+									"\r",
+									"//Validate Response Message\r",
+									"pm.test(\"[1.6] TC02 Validate Response Message For get Pet is Not Found\", function () {\r",
+									"     pm.expect(pm.response.status).to.have.equal(\"Not Found\");\r",
+									"});\r",
+									"\r",
+									"//Validate Response time is less than 2000ms\r",
+									"pm.test(\"[1.6] TC03 Validate Response Time is less Than 1000ms\", function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(3000);\r",
+									"});\r",
+									"\r",
+									"//Validate Response Size is less than 2000ms\r",
+									"pm.test(\"[1.6] TC04 Validate Response Size is less than 1000ms\", function () {\r",
+									"    pm.expect(pm.response.responseSize).to.be.below(1000);\r",
+									"});\r",
+									"\r",
+									"//validate code to be expected\r",
+									"pm.test(\"[1.4] TC05 Validate code in response as expected\",function(){\r",
+									"    pm.expect(pm.response.json().code).to.equal(1);\r",
+									"});\r",
+									"\r",
+									"//validate type to be expected\r",
+									"pm.test(\"[1.4] TC06 Validate type in response as expected\",function(){\r",
+									"    pm.expect(pm.response.json().type).to.equal(\"error\");\r",
+									"});\r",
+									"\r",
+									"//validate message to be expected\r",
+									"pm.test(\"[1.4] TC07 Validate message in response as expected\",function(){\r",
+									"    pm.expect(pm.response.json().message).to.equal(\"Pet not found\");\r",
+									"});\r",
+									"\r",
+									"//Validate response schema\r",
+									"pm.test(\"[1.6] TC08 Validate Get Pet Response Schema is Valid\", function () {\r",
+									"    var schema= {\r",
+									"  \"type\": \"object\",\r",
+									"  \"properties\": {\r",
+									"    \"code\": {\r",
+									"      \"type\": \"integer\"\r",
+									"    },\r",
+									"    \"type\": {\r",
+									"      \"type\": \"string\"\r",
+									"    },\r",
+									"    \"message\": {\r",
+									"      \"type\": \"string\"\r",
+									"    }\r",
+									"  },\r",
+									"  \"required\": [\r",
+									"    \"code\",\r",
+									"    \"type\",\r",
+									"    \"message\"\r",
+									"  ]\r",
+									"}\r",
+									"pm.response.to.have.jsonSchema(schema);\r",
+									"});"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "accept",
+								"value": "application/json"
+							},
+							{
+								"key": "api_key",
+								"value": "client_id"
+							}
+						],
+						"url": {
+							"raw": "{{URL}}/v2/pet/{{petId}}",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"v2",
+								"pet",
+								"{{petId}}"
+							]
+						},
+						"description": "**Get Pet After Adding New Pet**\n\n**Generated from** cURL: curl -X 'GET'  \n'[https://petstore.swagger.io/v2/pet/9223372036854775807'](https://petstore.swagger.io/v2/pet/9223372036854775807')  \n\\-H 'accept: application/json'  \n\\-H 'api_key: client_id'"
+					},
+					"response": []
+				}
+			],
+			"description": "# 🐾 Pet API\n\nManage pets in the store.​\n\n- **Add a new pet**\n    \n    - **POST** `/pet`\n        \n    - **Request Body**: Pet object (JSON)\n        \n    - **Response**: 200 OK with the created pet details​\n        \n- **Find pet by ID**\n    \n    - **GET** `/pet/{petId}`\n        \n    - **Path Parameter**: `petId`\n        \n    - **Response**: Pet object or 404 if not found​\n        \n- **Update an existing pet**\n    \n    - **PUT** `/pet`\n        \n    - **Request Body**: Updated Pet object\n        \n    - **Response**: 200 OK with updated pet info​\n        \n- **Find pet by ID**\n    \n    - **GET** `/pet/{petId}`\n        \n    - **Path Parameter**: `petId`\n        \n    - **Response**: Pet object or 404 if not found​\n        \n- **Delete Pet**\n    \n    - **DELETE** `/pet/{petId}`\n        \n    - **Path Parameter**: `petId`\n        \n    - **Response**: ​200 OK if deleted​\n        \n- **Find pet by ID**\n    \n    - **GET** `/pet/{petId}`\n        \n    - **Path Parameter**: `petId`\n        \n    - **Response**: Pet object or 404 if not found​"
+		},
+		{
+			"name": "2.Store",
+			"item": [
+				{
+					"name": "2.1 Inventory",
+					"item": [
+						{
+							"name": "2.1 Get Inventory By Status",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"//Validate Response  Code\r",
+											"pm.test(\"[2.1] TC01 Validate Response Code For Getting Store Inventory is 200\", function () {\r",
+											"\tpm.expect(pm.response.code).to.have.equal(200);\r",
+											"});\r",
+											"\r",
+											"//Validate Response Message\r",
+											"pm.test(\"[2.1] TC02 Validate Response Message For Getting Store Inventory is Ok\", function () {\r",
+											"    pm.expect(pm.response.status).to.have.equal(\"OK\");\r",
+											"});\r",
+											"\r",
+											"//Validate Response time is less than 2000ms\r",
+											"pm.test(\"[2.1] TC03 Validate Response Time is less Than 1000ms\", function () {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(3000);\r",
+											"});\r",
+											"\r",
+											"//Validate Response Size is less than 2000ms\r",
+											"pm.test(\"[2.1] TC04 Validate Response Size is less than 1000ms\", function () {\r",
+											"    pm.expect(pm.response.responseSize).to.be.below(1000);\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "accept",
+										"value": "application/json"
+									}
+								],
+								"url": {
+									"raw": "{{URL}}/v2/store/inventory",
+									"host": [
+										"{{URL}}"
+									],
+									"path": [
+										"v2",
+										"store",
+										"inventory"
+									]
+								},
+								"description": "##### Returns a map of status codes to quantities\n\n**Generated from** cURL: curl -X 'GET'  \n'[https://petstore.swagger.io/v2/store/inventory'](https://petstore.swagger.io/v2/store/inventory')  \n\\-H 'accept: application/json'"
+							},
+							"response": []
+						}
+					],
+					"description": "- Returns pet inventories by status\n    \n- **Get inventory**\n    \n    - **GET** `/store/inventory`\n        \n    - **Response**: Map of status codes to quantities (e.g., `{\"available\": 12}`)​"
+				},
+				{
+					"name": "2.2 Order",
+					"item": [
+						{
+							"name": "2.2.1 Create New Order",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"//Add order Id\r",
+											"pm.collectionVariables.set(\"id\",pm.response.json().id)\r",
+											"\r",
+											"//Validate Response  Code\r",
+											"pm.test(\"[2.2.1] TC01 Validate Response Code For Creating New Order is 200\", function () {\r",
+											"\tpm.expect(pm.response.code).to.have.equal(200);\r",
+											"});\r",
+											"\r",
+											"//Validate Response Message\r",
+											"pm.test(\"[2.2.1] TC02 Validate Response Message For Creating New Order is Ok\", function () {\r",
+											"    pm.expect(pm.response.status).to.have.equal(\"OK\");\r",
+											"});\r",
+											"\r",
+											"//Validate Response time is less than 2000ms\r",
+											"pm.test(\"[2.2.1] TC03 Validate Response Time is less Than 1000ms\", function () {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(4000);\r",
+											"});\r",
+											"\r",
+											"//Validate Response Size is less than 2000ms\r",
+											"pm.test(\"[2.2.1] TC04 Validate Response Size is less than 1000ms\", function () {\r",
+											"    pm.expect(pm.response.responseSize).to.be.below(1000);\r",
+											"});\r",
+											"\r",
+											"//Validate response schema\r",
+											"pm.test(\"[2.2.1] TC05 Validate New Response Schema is Valid\", function () {\r",
+											"    var schema= {\r",
+											"  \"type\": \"object\",\r",
+											"  \"properties\": {\r",
+											"    \"id\": {\r",
+											"      \"type\": \"integer\"\r",
+											"    },\r",
+											"    \"petId\": {\r",
+											"      \"type\": \"integer\"\r",
+											"    },\r",
+											"    \"quantity\": {\r",
+											"      \"type\": \"integer\"\r",
+											"    },\r",
+											"    \"shipDate\": {\r",
+											"      \"type\": \"string\"\r",
+											"    },\r",
+											"    \"status\": {\r",
+											"      \"type\": \"string\"\r",
+											"    },\r",
+											"    \"complete\": {\r",
+											"      \"type\": \"boolean\"\r",
+											"    }\r",
+											"  },\r",
+											"  \"required\": [\r",
+											"    \"id\",\r",
+											"    \"petId\",\r",
+											"    \"quantity\",\r",
+											"    \"shipDate\",\r",
+											"    \"status\",\r",
+											"    \"complete\"\r",
+											"  ]\r",
+											"}\r",
+											"pm.response.to.have.jsonSchema(schema);\r",
+											"});\r",
+											"\r",
+											"//validate petId to be expected\r",
+											"pm.test(\"[2.2.1] TC06 Validate petId in response as expected\",function(){\r",
+											"    pm.expect(pm.response.json().petId).to.equal(0);\r",
+											"});\r",
+											"\r",
+											"//validate quantity to be expected\r",
+											"pm.test(\"[2.2.1] TC07 Validate quantity in response as expected\",function(){\r",
+											"    pm.expect(pm.response.json().quantity).to.equal(0);\r",
+											"});\r",
+											"\r",
+											"//validate Status to be expected\r",
+											"pm.test(\"[2.2.1] TC08 Validate Status in response as expected\",function(){\r",
+											"    pm.expect(pm.response.json().status).to.equal(\"placed\");\r",
+											"});\r",
+											"\r",
+											"//validate Complete to be expected\r",
+											"pm.test(\"[2.2.1] TC09 Validate Complete in response as expected\",function(){\r",
+											"    pm.expect(pm.response.json().complete).to.be.true\r",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "POST",
+								"header": [
+									{
+										"key": "accept",
+										"value": "application/json"
+									},
+									{
+										"key": "Content-Type",
+										"value": "application/json"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\r\n  \"id\": 0,\r\n  \"petId\": 0,\r\n  \"quantity\": 0,\r\n  \"shipDate\": \"2025-04-30T21:28:41.579Z\",\r\n  \"status\": \"placed\",\r\n  \"complete\": true\r\n}",
+									"options": {
+										"raw": {
+											"language": "json"
+										}
+									}
+								},
+								"url": {
+									"raw": "{{URL}}/v2/store/order",
+									"host": [
+										"{{URL}}"
+									],
+									"path": [
+										"v2",
+										"store",
+										"order"
+									]
+								},
+								"description": "Generated from cURL: curl -X 'POST'  \n'[https://petstore.swagger.io/v2/store/order'](https://petstore.swagger.io/v2/store/order')  \n\\-H 'accept: application/json'  \n\\-H 'Content-Type: application/json'  \n\\-d '{  \n\"id\": 0,  \n\"petId\": 0,  \n\"quantity\": 0,  \n\"shipDate\": \"2025-04-30T21:28:41.579Z\",  \n\"status\": \"placed\",  \n\"complete\": true  \n}'"
+							},
+							"response": []
+						},
+						{
+							"name": "2.2.2 Find purchase order by ID",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"//Validate Response  Code\r",
+											"pm.test(\"[2.2.2] TC01 Validate Response Code For Creating New Order is 200\", function () {\r",
+											"\tpm.expect(pm.response.code).to.have.equal(200);\r",
+											"});\r",
+											"\r",
+											"//Validate Response Message\r",
+											"pm.test(\"[2.2.2] TC02 Validate Response Message For Creating New Order is Ok\", function () {\r",
+											"    pm.expect(pm.response.status).to.have.equal(\"OK\");\r",
+											"});\r",
+											"\r",
+											"//Validate Response time is less than 2000ms\r",
+											"pm.test(\"[2.2.2] TC03 Validate Response Time is less Than 1000ms\", function () {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(3000);\r",
+											"});\r",
+											"\r",
+											"//Validate Response Size is less than 2000ms\r",
+											"pm.test(\"[2.2.2] TC04 Validate Response Size is less than 1000ms\", function () {\r",
+											"    pm.expect(pm.response.responseSize).to.be.below(1000);\r",
+											"});\r",
+											"\r",
+											"//Validate response schema\r",
+											"pm.test(\"[2.2.2] TC05 Validate New Response Schema is Valid\", function () {\r",
+											"    var schema= {\r",
+											"  \"type\": \"object\",\r",
+											"  \"properties\": {\r",
+											"    \"id\": {\r",
+											"      \"type\": \"integer\"\r",
+											"    },\r",
+											"    \"petId\": {\r",
+											"      \"type\": \"integer\"\r",
+											"    },\r",
+											"    \"quantity\": {\r",
+											"      \"type\": \"integer\"\r",
+											"    },\r",
+											"    \"shipDate\": {\r",
+											"      \"type\": \"string\"\r",
+											"    },\r",
+											"    \"status\": {\r",
+											"      \"type\": \"string\"\r",
+											"    },\r",
+											"    \"complete\": {\r",
+											"      \"type\": \"boolean\"\r",
+											"    }\r",
+											"  },\r",
+											"  \"required\": [\r",
+											"    \"id\",\r",
+											"    \"petId\",\r",
+											"    \"quantity\",\r",
+											"    \"shipDate\",\r",
+											"    \"status\",\r",
+											"    \"complete\"\r",
+											"  ]\r",
+											"}\r",
+											"pm.response.to.have.jsonSchema(schema);\r",
+											"});\r",
+											"\r",
+											"//validate Status to be expected\r",
+											"pm.test(\"[2.2.2] TC06 Validate Status in response as expected\",function(){\r",
+											"    pm.expect(pm.response.json().status).to.equal(\"placed\");\r",
+											"});\r",
+											"\r",
+											"//validate Complete to be expected\r",
+											"pm.test(\"[2.2.2] TC07 Validate Complete in response as expected\",function(){\r",
+											"    pm.expect(pm.response.json().complete).to.be.true\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "accept",
+										"value": "application/json"
+									}
+								],
+								"url": {
+									"raw": "{{URL}}/v2/store/order/{{id}}",
+									"host": [
+										"{{URL}}"
+									],
+									"path": [
+										"v2",
+										"store",
+										"order",
+										"{{id}}"
+									]
+								},
+								"description": "Generated from cURL: curl -X 'GET'  \n'[https://petstore.swagger.io/v2/store/order/5'](https://petstore.swagger.io/v2/store/order/5')  \n\\-H 'accept: application/json'"
+							},
+							"response": []
+						},
+						{
+							"name": "2.2.3 Delete purchase order by ID",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"//Validate Response Status Code\r",
+											"pm.test(\"[2.2.3] TC01 Validate Response Code For Deleting is 404\", function () {\r",
+											"    pm.expect(pm.response.code).to.have.equal(200);\r",
+											"});\r",
+											"\r",
+											"//Validate Response Message\r",
+											"pm.test(\"[2.2.3] TC02 Validate Response Message For Deleting is Ok\", function () {\r",
+											"     pm.expect(pm.response.status).to.have.equal(\"OK\");\r",
+											"});\r",
+											"\r",
+											"//Validate Response time is less than 2000ms\r",
+											"pm.test(\"[2.2.3] TC03 Validate Response Time is less Than 1000ms\", function () {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(3000);\r",
+											"});\r",
+											"\r",
+											"//Validate Response Size is less than 2000ms\r",
+											"pm.test(\"[2.2.3] TC04 Validate Response Size is less than 1000ms\", function () {\r",
+											"    pm.expect(pm.response.responseSize).to.be.below(1000);\r",
+											"});\r",
+											"\r",
+											"//validate Code to be expected\r",
+											"pm.test(\"[2.2.3] TC05 Validate Code in response as expected\",function(){\r",
+											"    pm.expect(pm.response.json().code).to.equal(200);\r",
+											"});\r",
+											"\r",
+											"//validate type to be expected\r",
+											"pm.test(\"[2.2.3] TC06 Validate Type in response as expected\",function(){\r",
+											"    pm.expect(pm.response.json().type).to.equal(\"unknown\");\r",
+											"});\r",
+											"\r",
+											"//validate message to be expected\r",
+											"pm.test(\"[2.2.3] TC06 Validate Message in response as expected\",function(){\r",
+											"    pm.expect(pm.response.json().message).to.equal(pm.collectionVariables.get(\"id\"));\r",
+											"});\r",
+											"\r",
+											"//Validate response schema\r",
+											"pm.test(\"[2.2.3] TC07 Validate Delete Pet Response Schema is Valid\", function () {\r",
+											"    var schema= {\r",
+											"  \"type\": \"object\",\r",
+											"  \"properties\": {\r",
+											"    \"code\": {\r",
+											"      \"type\": \"integer\"\r",
+											"    },\r",
+											"    \"type\": {\r",
+											"      \"type\": \"string\"\r",
+											"    },\r",
+											"    \"message\": {\r",
+											"      \"type\": \"string\"\r",
+											"    }\r",
+											"  },\r",
+											"  \"required\": [\r",
+											"    \"code\",\r",
+											"    \"type\",\r",
+											"    \"message\"\r",
+											"  ]\r",
+											"}\r",
+											"pm.response.to.have.jsonSchema(schema);\r",
+											"});"
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "DELETE",
+								"header": [
+									{
+										"key": "accept",
+										"value": "application/json"
+									}
+								],
+								"url": {
+									"raw": "{{URL}}/v2/store/order/{{id}}",
+									"host": [
+										"{{URL}}"
+									],
+									"path": [
+										"v2",
+										"store",
+										"order",
+										"{{id}}"
+									]
+								},
+								"description": "#### Delete purchase order by ID\n\n**Generated from** cURL: curl -X 'DELETE'  \n'[https://petstore.swagger.io/v2/store/order/1'](https://petstore.swagger.io/v2/store/order/1')  \n\\-H 'accept: application/json'"
+							},
+							"response": []
+						},
+						{
+							"name": "2.2.4 Find purchase order by ID",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"exec": [
+											"//Validate Response  Code\r",
+											"pm.test(\"[2.2.4] TC01 Validate Response Code For Creating New Order is 200\", function () {\r",
+											"\tpm.expect(pm.response.code).to.have.equal(200);\r",
+											"});\r",
+											"\r",
+											"//Validate Response Message\r",
+											"pm.test(\"[2.2.4] TC02 Validate Response Message For Creating New Order is Ok\", function () {\r",
+											"    pm.expect(pm.response.status).to.have.equal(\"OK\");\r",
+											"});\r",
+											"\r",
+											"//Validate Response time is less than 2000ms\r",
+											"pm.test(\"[2.2.4] TC03 Validate Response Time is less Than 1000ms\", function () {\r",
+											"    pm.expect(pm.response.responseTime).to.be.below(3000);\r",
+											"});\r",
+											"\r",
+											"//Validate Response Size is less than 2000ms\r",
+											"pm.test(\"[2.2.4] TC04 Validate Response Size is less than 1000ms\", function () {\r",
+											"    pm.expect(pm.response.responseSize).to.be.below(1000);\r",
+											"});\r",
+											"\r",
+											"//Validate response schema\r",
+											"pm.test(\"[2.2.4] TC05 Validate New Response Schema is Valid\", function () {\r",
+											"    var schema= {\r",
+											"  \"type\": \"object\",\r",
+											"  \"properties\": {\r",
+											"    \"id\": {\r",
+											"      \"type\": \"integer\"\r",
+											"    },\r",
+											"    \"petId\": {\r",
+											"      \"type\": \"integer\"\r",
+											"    },\r",
+											"    \"quantity\": {\r",
+											"      \"type\": \"integer\"\r",
+											"    },\r",
+											"    \"shipDate\": {\r",
+											"      \"type\": \"string\"\r",
+											"    },\r",
+											"    \"status\": {\r",
+											"      \"type\": \"string\"\r",
+											"    },\r",
+											"    \"complete\": {\r",
+											"      \"type\": \"boolean\"\r",
+											"    }\r",
+											"  },\r",
+											"  \"required\": [\r",
+											"    \"id\",\r",
+											"    \"petId\",\r",
+											"    \"quantity\",\r",
+											"    \"shipDate\",\r",
+											"    \"status\",\r",
+											"    \"complete\"\r",
+											"  ]\r",
+											"}\r",
+											"pm.response.to.have.jsonSchema(schema);\r",
+											"});\r",
+											"\r",
+											"//validate Status to be expected\r",
+											"pm.test(\"[2.2.4] TC06 Validate Status in response as expected\",function(){\r",
+											"    pm.expect(pm.response.json().status).to.equal(\"placed\");\r",
+											"});\r",
+											"\r",
+											"//validate Complete to be expected\r",
+											"pm.test(\"[2.2.4] TC07 Validate Complete in response as expected\",function(){\r",
+											"    pm.expect(pm.response.json().complete).to.be.true\r",
+											"});\r",
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"exec": [
+											""
+										],
+										"type": "text/javascript",
+										"packages": {}
+									}
+								}
+							],
+							"request": {
+								"method": "GET",
+								"header": [
+									{
+										"key": "accept",
+										"value": "application/json"
+									}
+								],
+								"url": {
+									"raw": "{{URL}}/v2/store/order/{{id}}",
+									"host": [
+										"{{URL}}"
+									],
+									"path": [
+										"v2",
+										"store",
+										"order",
+										"{{id}}"
+									]
+								},
+								"description": "Generated from cURL: curl -X 'GET'  \n'[https://petstore.swagger.io/v2/store/order/{{id}}'](https://petstore.swagger.io/v2/store/order/5')  \n\\-H 'accept: application/json'"
+							},
+							"response": []
+						}
+					],
+					"description": "Handle store orders\n\n- **Place an order for a pet**\n    \n    - **POST** `/store/order`\n        \n    - **Request Body**: Order object\n        \n    - **Response**: 200 OK with order details​\n        \n- **Find purchase order by ID**\n    \n    - **GET** `/store/order/{orderId}`\n        \n    - **Path Parameter**: `orderId`\n        \n    - **Response**: Order object or 404 if not found​\n        \n- **Delete purchase order by ID**\n    \n    - **DELETE** `/store/order/{orderId}`\n        \n    - **Path Parameter**: `orderId`\n        \n    - **Response**: 200 OK if deleted​\n        \n- **Find purchase order by ID**\n    \n    - **GET** `/store/order/{orderId}`\n        \n    - **Path Parameter**: `orderId`\n        \n    - **Response**: Order object or 404 if not found​"
+				}
+			],
+			"description": "## 🛒 Store API\n\nHandle store orders and inventory.​\n\n- **Place an order for a pet**\n    \n    - **POST** `/store/order`\n        \n    - **Request Body**: Order object\n        \n    - **Response**: 200 OK with order details​\n        \n- **Find purchase order by ID**\n    \n    - **GET** `/store/order/{orderId}`\n        \n    - **Path Parameter**: `orderId`\n        \n    - **Response**: Order object or 404 if not found​\n        \n- **Delete purchase order by ID**\n    \n    - **DELETE** `/store/order/{orderId}`\n        \n    - **Path Parameter**: `orderId`\n        \n    - **Response**: 200 OK if deleted\n        \n- **Get inventory**\n    \n    - **GET** `/store/inventory`\n        \n    - **Response**: Map of status codes to quantities (e.g., `{\"available\": 12}`)​"
+		},
+		{
+			"name": "3.User",
+			"item": [
+				{
+					"name": "3.1 Create New User",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"//Set Data\r",
+									"pm.collectionVariables.set(\"userName\",JSON.parse(pm.request.body.raw).username);\r",
+									"pm.collectionVariables.set(\"firstName\",JSON.parse(pm.request.body.raw).firstName);\r",
+									"pm.collectionVariables.set(\"lastName\",JSON.parse(pm.request.body.raw).lastName);\r",
+									"pm.collectionVariables.set(\"email\",JSON.parse(pm.request.body.raw).email);\r",
+									"pm.collectionVariables.set(\"password\",JSON.parse(pm.request.body.raw).password);\r",
+									"pm.collectionVariables.set(\"phone\",JSON.parse(pm.request.body.raw).phone)\r",
+									"\r",
+									"//Validate Response  Code\r",
+									"pm.test(\"[3.1] TC01 Validate Response Code For Creating New User is 200\", function () {\r",
+									"\tpm.expect(pm.response.code).to.have.equal(200);\r",
+									"});\r",
+									"\r",
+									"//Validate Response Message\r",
+									"pm.test(\"[3.1] TC02 Validate Response Message For Creating New User is Ok\", function () {\r",
+									"    pm.expect(pm.response.status).to.have.equal(\"OK\");\r",
+									"});\r",
+									"\r",
+									"//Validate Response time is less than 2000ms\r",
+									"pm.test(\"[3.1] TC03 Validate Response Time is less Than 1000ms\", function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(3000);\r",
+									"});\r",
+									"\r",
+									"//Validate Response Size is less than 2000ms\r",
+									"pm.test(\"[3.1] TC04 Validate Response Size is less than 1000ms\", function () {\r",
+									"    pm.expect(pm.response.responseSize).to.be.below(1000);\r",
+									"});\r",
+									"\r",
+									"//Validate response schema\r",
+									"pm.test(\"[3.1] TC05 Validate Response Schema is Valid\", function () {\r",
+									"    var schema= {\r",
+									"  \"type\": \"object\",\r",
+									"  \"properties\": {\r",
+									"    \"code\": {\r",
+									"      \"type\": \"integer\"\r",
+									"    },\r",
+									"    \"type\": {\r",
+									"      \"type\": \"string\"\r",
+									"    },\r",
+									"    \"message\": {\r",
+									"      \"type\": \"string\"\r",
+									"    }\r",
+									"  },\r",
+									"  \"required\": [\r",
+									"    \"code\",\r",
+									"    \"type\",\r",
+									"    \"message\"\r",
+									"  ]\r",
+									"}\r",
+									"pm.response.to.have.jsonSchema(schema);\r",
+									"});\r",
+									"\r",
+									"//validate Code to be expected\r",
+									"pm.test(\"[3.1] TC06 Validate code in response as expected\",function(){\r",
+									"    pm.expect(pm.response.json().code).to.equal(200);\r",
+									"});\r",
+									"\r",
+									"//validate type to be expected\r",
+									"pm.test(\"[3.1] TC07 Validate type in response as expected\",function(){\r",
+									"    pm.expect(pm.response.json().type).to.equal(\"unknown\");\r",
+									"});\r",
+									"\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"id\": 0,\r\n  \"username\": \"{{$randomFirstName}}\",\r\n  \"firstName\": \"{{$randomFirstName}}\",\r\n  \"lastName\": \"{{$randomLastName}}\",\r\n  \"email\": \"{{$randomEmail}}\",\r\n  \"password\": \"{{$randomPassword}}\",\r\n  \"phone\": \"{{$randomPhoneNumber}}\",\r\n  \"userStatus\": 0\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/v2/user",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"v2",
+								"user"
+							]
+						},
+						"description": "##### **Create New User**  \n**Generated from** cURL: curl -X 'POST'  \n'[https://petstore.swagger.io/v2/user'](https://petstore.swagger.io/v2/user')  \n\\-H 'accept: application/json'  \n\\-H 'Content-Type: application/json'  \n\\-d '{  \n\"id\": 0,  \n\"username\": \"string\",  \n\"firstName\": \"string\",  \n\"lastName\": \"string\",  \n\"email\": \"string\",  \n\"password\": \"string\",  \n\"phone\": \"string\",  \n\"userStatus\": 0  \n}'"
+					},
+					"response": []
+				},
+				{
+					"name": "3.2 Get UserName",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"//Validate Response  Code\r",
+									"pm.test(\"[3.2] TC01 Validate Response Code For getting userNamet is 200\", function () {\r",
+									"\tpm.expect(pm.response.code).to.have.equal(200);\r",
+									"});\r",
+									"\r",
+									"//Validate Response Message\r",
+									"pm.test(\"[3.2] TC02 Validate Response Message For getting userNamet is Ok\", function () {\r",
+									"    pm.expect(pm.response.status).to.have.equal(\"OK\");\r",
+									"});\r",
+									"\r",
+									"//Validate Response time is less than 2000ms\r",
+									"pm.test(\"[3.2] TC03 Validate Response Time is less Than 1000ms\", function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(1000);\r",
+									"});\r",
+									"\r",
+									"//Validate response schema\r",
+									"pm.test(\"[3.2] TC04 Validate Response Schema is Valid\", function () {\r",
+									"    var schema= {\r",
+									"  \"type\": \"object\",\r",
+									"  \"properties\": {\r",
+									"    \"id\": {\r",
+									"      \"type\": \"integer\"\r",
+									"    },\r",
+									"    \"username\": {\r",
+									"      \"type\": \"string\"\r",
+									"    },\r",
+									"    \"firstName\": {\r",
+									"      \"type\": \"string\"\r",
+									"    },\r",
+									"    \"lastName\": {\r",
+									"      \"type\": \"string\"\r",
+									"    },\r",
+									"    \"email\": {\r",
+									"      \"type\": \"string\"\r",
+									"    },\r",
+									"    \"password\": {\r",
+									"      \"type\": \"string\"\r",
+									"    },\r",
+									"    \"phone\": {\r",
+									"      \"type\": \"string\"\r",
+									"    },\r",
+									"    \"userStatus\": {\r",
+									"      \"type\": \"integer\"\r",
+									"    }\r",
+									"  },\r",
+									"  \"required\": [\r",
+									"    \"id\",\r",
+									"    \"username\",\r",
+									"    \"firstName\",\r",
+									"    \"lastName\",\r",
+									"    \"email\",\r",
+									"    \"password\",\r",
+									"    \"phone\",\r",
+									"    \"userStatus\"\r",
+									"  ]\r",
+									"}\r",
+									"pm.response.to.have.jsonSchema(schema);\r",
+									"});\r",
+									"\r",
+									"\r",
+									"//Validate Response Size is less than 2000ms\r",
+									"pm.test(\"[3.2] TC05 Validate Response Size is less than 1000ms\", function () {\r",
+									"    pm.expect(pm.response.responseSize).to.be.below(1000);\r",
+									"});\r",
+									"\r",
+									"//validate userName to be expected\r",
+									"pm.test(\"[3.2] TC07 Validate userName return in response as expected\",function(){\r",
+									"    pm.expect(pm.response.json().username).to.equal(pm.collectionVariables.get(\"userName\"));\r",
+									"});\r",
+									"\r",
+									"//validate firstName to be expected\r",
+									"pm.test(\"[3.2] TC08 Validate firstName return in response as expected\",function(){\r",
+									"    pm.expect(pm.response.json().firstName).to.equal(pm.collectionVariables.get(\"firstName\"));\r",
+									"});\r",
+									"//validate lastName to be expected\r",
+									"pm.test(\"[3.2] TC09 Validate lastName return in response as expected\",function(){\r",
+									"    pm.expect(pm.response.json().lastName).to.equal(pm.collectionVariables.get(\"lastName\"));\r",
+									"});\r",
+									"//validate phone to be expected\r",
+									"pm.test(\"[3.2] TC10 Validate All Data return in response as expected\",function(){\r",
+									"    pm.expect(pm.response.json().phone).to.equal(pm.collectionVariables.get(\"phone\"));\r",
+									"});\r",
+									"\r",
+									"//validate email to be expected\r",
+									"pm.test(\"[3.2] TC11 Validate email return in response as expected\",function(){\r",
+									"    pm.expect(pm.response.json().email).to.equal(pm.collectionVariables.get(\"email\"));\r",
+									"});\r",
+									"\r",
+									"//validate password to be expected\r",
+									"pm.test(\"[3.2] TC12 Validate password return in response as expected\",function(){\r",
+									"    pm.expect(pm.response.json().password).to.equal(pm.collectionVariables.get(\"password\"));\r",
+									"});\r",
+									"\r",
+									"\r",
+									"\r",
+									"\r",
+									"\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{URL}}/v2/user/{{userName}}",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"v2",
+								"user",
+								"{{userName}}"
+							]
+						},
+						"description": "##### **Get User By UserNmae**\n\n**Generated from** cURL: curl -X 'GET'  \n'[https://petstore.swagger.io/v2/user/{{userName}}'](https://petstore.swagger.io/v2/user/esraa')  \n\\-H 'accept: application/json'"
+					},
+					"response": []
+				},
+				{
+					"name": "3.3 Update Existing UserName",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"//Set Data\r",
+									"pm.collectionVariables.set(\"userName\",JSON.parse(pm.request.body.raw).username);\r",
+									"pm.collectionVariables.set(\"firstName\",JSON.parse(pm.request.body.raw).firstName);\r",
+									"pm.collectionVariables.set(\"lastName\",JSON.parse(pm.request.body.raw).lastName);\r",
+									"pm.collectionVariables.set(\"email\",JSON.parse(pm.request.body.raw).email);\r",
+									"pm.collectionVariables.set(\"password\",JSON.parse(pm.request.body.raw).password);\r",
+									"pm.collectionVariables.set(\"phone\",JSON.parse(pm.request.body.raw).phone)\r",
+									"\r",
+									"//Validate Response  Code\r",
+									"pm.test(\"[3.3] TC01 Validate Response Code For Creating New User is 200\", function () {\r",
+									"\tpm.expect(pm.response.code).to.have.equal(200);\r",
+									"});\r",
+									"\r",
+									"//Validate Response Message\r",
+									"pm.test(\"[3.3] TC02 Validate Response Message For Creating New User is Ok\", function () {\r",
+									"    pm.expect(pm.response.status).to.have.equal(\"OK\");\r",
+									"});\r",
+									"\r",
+									"//Validate Response time is less than 2000ms\r",
+									"pm.test(\"[3.3] TC03 Validate Response Time is less Than 1000ms\", function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(3000);\r",
+									"});\r",
+									"\r",
+									"//Validate Response Size is less than 2000ms\r",
+									"pm.test(\"[3.3] TC04 Validate Response Size is less than 1000ms\", function () {\r",
+									"    pm.expect(pm.response.responseSize).to.be.below(1000);\r",
+									"});\r",
+									"\r",
+									"//Validate response schema\r",
+									"pm.test(\"[3.3] TC05 Validate Response Schema is Valid\", function () {\r",
+									"    var schema= {\r",
+									"  \"type\": \"object\",\r",
+									"  \"properties\": {\r",
+									"    \"code\": {\r",
+									"      \"type\": \"integer\"\r",
+									"    },\r",
+									"    \"type\": {\r",
+									"      \"type\": \"string\"\r",
+									"    },\r",
+									"    \"message\": {\r",
+									"      \"type\": \"string\"\r",
+									"    }\r",
+									"  },\r",
+									"  \"required\": [\r",
+									"    \"code\",\r",
+									"    \"type\",\r",
+									"    \"message\"\r",
+									"  ]\r",
+									"}\r",
+									"pm.response.to.have.jsonSchema(schema);\r",
+									"});\r",
+									"\r",
+									"//validate Code to be expected\r",
+									"pm.test(\"[3.3] TC06 Validate code in response as expected\",function(){\r",
+									"    pm.expect(pm.response.json().code).to.equal(200);\r",
+									"});\r",
+									"\r",
+									"//validate type to be expected\r",
+									"pm.test(\"[3.3] TC07 Validate type in response as expected\",function(){\r",
+									"    pm.expect(pm.response.json().type).to.equal(\"unknown\");\r",
+									"});\r",
+									"\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"id\": 0,\r\n  \"username\": \"{{$randomFirstName}}\",\r\n  \"firstName\": \"{{$randomFirstName}}\",\r\n  \"lastName\": \"{{$randomLastName}}\",\r\n  \"email\": \"{{$randomEmail}}\",\r\n  \"password\": \"{{$randomPassword}}\",\r\n  \"phone\": \"{{$randomPhoneNumber}}\",\r\n  \"userStatus\": 0\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/v2/user/{{userName}}",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"v2",
+								"user",
+								"{{userName}}"
+							]
+						},
+						"description": "#### **Update Existing UserName**\n\n**Generated from** cURL: curl -X 'PUT'  \n'[https://petstore.swagger.io/v2/user/es'](https://petstore.swagger.io/v2/user/es')  \n\\-H 'accept: application/json'  \n\\-H 'Content-Type: application/json'  \n\\-d '{  \n\"id\": 0,  \n\"username\": \"string\",  \n\"firstName\": \"string\",  \n\"lastName\": \"string\",  \n\"email\": \"string\",  \n\"password\": \"string\",  \n\"phone\": \"string\",  \n\"userStatus\": 0  \n}'"
+					},
+					"response": []
+				},
+				{
+					"name": "3.4 Get UserName",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"//Validate Response  Code\r",
+									"pm.test(\"[3.4] TC01 Validate Response Code For getting userName is 200\", function () {\r",
+									"\tpm.expect(pm.response.code).to.have.equal(200);\r",
+									"});\r",
+									"\r",
+									"//Validate Response Message\r",
+									"pm.test(\"[3.4] TC02 Validate Response Message For getting userName is Ok\", function () {\r",
+									"    pm.expect(pm.response.status).to.have.equal(\"OK\");\r",
+									"});\r",
+									"\r",
+									"//Validate Response time is less than 2000ms\r",
+									"pm.test(\"[3.4] TC03 Validate Response Time is less Than 1000ms\", function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(1000);\r",
+									"});\r",
+									"\r",
+									"//Validate response schema\r",
+									"pm.test(\"[3.4] TC04 Validate Response Schema is Valid\", function () {\r",
+									"    var schema= {\r",
+									"  \"type\": \"object\",\r",
+									"  \"properties\": {\r",
+									"    \"id\": {\r",
+									"      \"type\": \"integer\"\r",
+									"    },\r",
+									"    \"username\": {\r",
+									"      \"type\": \"string\"\r",
+									"    },\r",
+									"    \"firstName\": {\r",
+									"      \"type\": \"string\"\r",
+									"    },\r",
+									"    \"lastName\": {\r",
+									"      \"type\": \"string\"\r",
+									"    },\r",
+									"    \"email\": {\r",
+									"      \"type\": \"string\"\r",
+									"    },\r",
+									"    \"password\": {\r",
+									"      \"type\": \"string\"\r",
+									"    },\r",
+									"    \"phone\": {\r",
+									"      \"type\": \"string\"\r",
+									"    },\r",
+									"    \"userStatus\": {\r",
+									"      \"type\": \"integer\"\r",
+									"    }\r",
+									"  },\r",
+									"  \"required\": [\r",
+									"    \"id\",\r",
+									"    \"username\",\r",
+									"    \"firstName\",\r",
+									"    \"lastName\",\r",
+									"    \"email\",\r",
+									"    \"password\",\r",
+									"    \"phone\",\r",
+									"    \"userStatus\"\r",
+									"  ]\r",
+									"}\r",
+									"pm.response.to.have.jsonSchema(schema);\r",
+									"});\r",
+									"\r",
+									"\r",
+									"//Validate Response Size is less than 2000ms\r",
+									"pm.test(\"[3.4] TC05 Validate Response Size is less than 1000ms\", function () {\r",
+									"    pm.expect(pm.response.responseSize).to.be.below(1000);\r",
+									"});\r",
+									"\r",
+									"//validate userName to be expected\r",
+									"pm.test(\"[3.4] TC06 Validate userName return in response as expected\",function(){\r",
+									"    pm.expect(pm.response.json().username).to.equal(pm.collectionVariables.get(\"userName\"));\r",
+									"});\r",
+									"\r",
+									"//validate firstName to be expected\r",
+									"pm.test(\"[3.4] TC07 Validate firstName return in response as expected\",function(){\r",
+									"    pm.expect(pm.response.json().firstName).to.equal(pm.collectionVariables.get(\"firstName\"));\r",
+									"});\r",
+									"//validate lastName to be expected\r",
+									"pm.test(\"[3.4] TC08 Validate lastName return in response as expected\",function(){\r",
+									"    pm.expect(pm.response.json().lastName).to.equal(pm.collectionVariables.get(\"lastName\"));\r",
+									"});\r",
+									"//validate phone to be expected\r",
+									"pm.test(\"[3.4] TC09 Validate All Data return in response as expected\",function(){\r",
+									"    pm.expect(pm.response.json().phone).to.equal(pm.collectionVariables.get(\"phone\"));\r",
+									"});\r",
+									"\r",
+									"//validate email to be expected\r",
+									"pm.test(\"[3.4] TC10 Validate email return in response as expected\",function(){\r",
+									"    pm.expect(pm.response.json().email).to.equal(pm.collectionVariables.get(\"email\"));\r",
+									"});\r",
+									"\r",
+									"//validate password to be expected\r",
+									"pm.test(\"[3.4] TC11 Validate password return in response as expected\",function(){\r",
+									"    pm.expect(pm.response.json().password).to.equal(pm.collectionVariables.get(\"password\"));\r",
+									"});\r",
+									"\r",
+									"\r",
+									"\r",
+									"\r",
+									"\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{URL}}/v2/user/{{userName}}",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"v2",
+								"user",
+								"{{userName}}"
+							]
+						},
+						"description": "##### **Get User By UserNmae**\n\n**Generated from** cURL: curl -X 'GET'  \n'[https://petstore.swagger.io/v2/user/{{userName}}'](https://petstore.swagger.io/v2/user/esraa')  \n\\-H 'accept: application/json'"
+					},
+					"response": []
+				},
+				{
+					"name": "3.5 Delete UserName",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"//Validate Response  Code\r",
+									"pm.test(\"[3.5] TC01 Validate Response Code is 200\", function () {\r",
+									"\tpm.expect(pm.response.code).to.have.equal(200);\r",
+									"});\r",
+									"\r",
+									"//Validate Response Message\r",
+									"pm.test(\"[3.5] TC02 Validate Response Message For Deleteing New User is Ok\", function () {\r",
+									"    pm.expect(pm.response.status).to.have.equal(\"OK\");\r",
+									"});\r",
+									"\r",
+									"//Validate Response time is less than 2000ms\r",
+									"pm.test(\"[3.5] TC03 Validate Response Time is less Than 1000ms\", function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(1000);\r",
+									"});\r",
+									"\r",
+									"//Validate Response size is less than 2000ms\r",
+									"pm.test(\"[3.5] TC04 Validate Response Size is less Than 1000ms\", function () {\r",
+									"    pm.expect(pm.response.responseSize).to.be.below(1000);\r",
+									"});\r",
+									"\r",
+									"//validate Code to be expected\r",
+									"pm.test(\"[3.5] TC05 Validate code in response as expected\",function(){\r",
+									"    pm.expect(pm.response.json().code).to.equal(200);\r",
+									"});\r",
+									"\r",
+									"//validate type to be expected\r",
+									"pm.test(\"[3.5] TC06 Validate type in response as expected\",function(){\r",
+									"    pm.expect(pm.response.json().type).to.equal(\"unknown\");\r",
+									"});\r",
+									"\r",
+									"\r",
+									"\r",
+									"\r",
+									"\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{URL}}/v2/user/{{userName}}",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"v2",
+								"user",
+								"{{userName}}"
+							]
+						},
+						"description": "#### **Delete User Name**\n\n**Generated from** cURL: curl -X 'DELETE'  \n'[https://petstore.swagger.io/v2/user/{{userName}}'](https://petstore.swagger.io/v2/user/esraa')  \n\\-H 'accept: application/json'"
+					},
+					"response": []
+				},
+				{
+					"name": "3.6 Get UserName",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"//Validate Response  Code\r",
+									"pm.test(\"[3.6] TC01 Validate Response Code For getting userName is 404\", function () {\r",
+									"\tpm.expect(pm.response.code).to.have.equal(404);\r",
+									"});\r",
+									"\r",
+									"//Validate Response Message\r",
+									"pm.test(\"[3.6] TC02 Validate Response Message For getting userName is Not Found\", function () {\r",
+									"    pm.expect(pm.response.status).to.have.equal(\"Not Found\");\r",
+									"});\r",
+									"\r",
+									"//Validate Response time is less than 2000ms\r",
+									"pm.test(\"[3.6] TC03 Validate Response Time is less Than 1000ms\", function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(1000);\r",
+									"});\r",
+									"\r",
+									"//Validate Response Size is less than 2000ms\r",
+									"pm.test(\"[3.6] TC04 Validate Response Size is less than 1000ms\", function () {\r",
+									"    pm.expect(pm.response.responseSize).to.be.below(1000);\r",
+									"});\r",
+									"\r",
+									"//validate Code to be expected\r",
+									"pm.test(\"[3.6] TC05 Validate Code in response as expected\",function(){\r",
+									"    pm.expect(pm.response.json().code).to.equal(1);\r",
+									"});\r",
+									"\r",
+									"//validate type to be expected\r",
+									"pm.test(\"[3.6] TC06 Validate Type in response as expected\",function(){\r",
+									"    pm.expect(pm.response.json().type).to.equal(\"error\");\r",
+									"});\r",
+									"\r",
+									"//validate message to be expected\r",
+									"pm.test(\"[3.6] TC07 Validate Message in response as expected\",function(){\r",
+									"    pm.expect(pm.response.json().message).to.equal(\"User not found\");\r",
+									"});\r",
+									"\r",
+									"\r",
+									"\r",
+									"\r",
+									"\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{URL}}/v2/user/{{userName}}",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"v2",
+								"user",
+								"{{userName}}"
+							]
+						},
+						"description": "##### **Get User By UserNmae**\n\n**Generated from** cURL: curl -X 'GET'  \n'[https://petstore.swagger.io/v2/user/{{userName}}'](https://petstore.swagger.io/v2/user/esraa')  \n\\-H 'accept: application/json'"
+					},
+					"response": []
+				},
+				{
+					"name": "3.7 Create New User",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"//Set Data\r",
+									"pm.collectionVariables.set(\"userName\",JSON.parse(pm.request.body.raw).username);\r",
+									"pm.collectionVariables.set(\"firstName\",JSON.parse(pm.request.body.raw).firstName);\r",
+									"pm.collectionVariables.set(\"lastName\",JSON.parse(pm.request.body.raw).lastName);\r",
+									"pm.collectionVariables.set(\"email\",JSON.parse(pm.request.body.raw).email);\r",
+									"pm.collectionVariables.set(\"password\",JSON.parse(pm.request.body.raw).password);\r",
+									"pm.collectionVariables.set(\"phone\",JSON.parse(pm.request.body.raw).phone)\r",
+									"\r",
+									"//Validate Response  Code\r",
+									"pm.test(\"[3.7] TC01 Validate Response Code For Creating New User is 200\", function () {\r",
+									"\tpm.expect(pm.response.code).to.have.equal(200);\r",
+									"});\r",
+									"\r",
+									"//Validate Response Message\r",
+									"pm.test(\"[3.7] TC02 Validate Response Message For Creating New User is Ok\", function () {\r",
+									"    pm.expect(pm.response.status).to.have.equal(\"OK\");\r",
+									"});\r",
+									"\r",
+									"//Validate Response time is less than 2000ms\r",
+									"pm.test(\"[3.7] TC03 Validate Response Time is less Than 1000ms\", function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(3000);\r",
+									"});\r",
+									"\r",
+									"//Validate Response Size is less than 2000ms\r",
+									"pm.test(\"[3.7] TC04 Validate Response Size is less than 1000ms\", function () {\r",
+									"    pm.expect(pm.response.responseSize).to.be.below(1000);\r",
+									"});\r",
+									"\r",
+									"//Validate response schema\r",
+									"pm.test(\"[3.7] TC05 Validate Response Schema is Valid\", function () {\r",
+									"    var schema= {\r",
+									"  \"type\": \"object\",\r",
+									"  \"properties\": {\r",
+									"    \"code\": {\r",
+									"      \"type\": \"integer\"\r",
+									"    },\r",
+									"    \"type\": {\r",
+									"      \"type\": \"string\"\r",
+									"    },\r",
+									"    \"message\": {\r",
+									"      \"type\": \"string\"\r",
+									"    }\r",
+									"  },\r",
+									"  \"required\": [\r",
+									"    \"code\",\r",
+									"    \"type\",\r",
+									"    \"message\"\r",
+									"  ]\r",
+									"}\r",
+									"pm.response.to.have.jsonSchema(schema);\r",
+									"});\r",
+									"\r",
+									"//validate Code to be expected\r",
+									"pm.test(\"[3.7] TC06 Validate code in response as expected\",function(){\r",
+									"    pm.expect(pm.response.json().code).to.equal(200);\r",
+									"});\r",
+									"\r",
+									"//validate type to be expected\r",
+									"pm.test(\"[3.7] TC07 Validate type in response as expected\",function(){\r",
+									"    pm.expect(pm.response.json().type).to.equal(\"unknown\");\r",
+									"});\r",
+									"\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "accept",
+								"value": "application/json"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"id\": 0,\r\n  \"username\": \"{{$randomFirstName}}\",\r\n  \"firstName\": \"{{$randomFirstName}}\",\r\n  \"lastName\": \"{{$randomLastName}}\",\r\n  \"email\": \"{{$randomEmail}}\",\r\n  \"password\": \"{{$randomPassword}}\",\r\n  \"phone\": \"{{$randomPhoneNumber}}\",\r\n  \"userStatus\": 0\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{URL}}/v2/user",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"v2",
+								"user"
+							]
+						},
+						"description": "##### **Create New User**\n\n**Generated from** cURL: curl -X 'POST'  \n'[https://petstore.swagger.io/v2/user'](https://petstore.swagger.io/v2/user')  \n\\-H 'accept: application/json'  \n\\-H 'Content-Type: application/json'  \n\\-d '{  \n\"id\": 0,  \n\"username\": \"string\",  \n\"firstName\": \"string\",  \n\"lastName\": \"string\",  \n\"email\": \"string\",  \n\"password\": \"string\",  \n\"phone\": \"string\",  \n\"userStatus\": 0  \n}'"
+					},
+					"response": []
+				},
+				{
+					"name": "3.8 Get UserName",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"//Validate Response  Code\r",
+									"pm.test(\"[3.8] TC01 Validate Response Code For getting userNamet is 200\", function () {\r",
+									"\tpm.expect(pm.response.code).to.have.equal(200);\r",
+									"});\r",
+									"\r",
+									"//Validate Response Message\r",
+									"pm.test(\"[3.8] TC02 Validate Response Message For getting userNamet is Ok\", function () {\r",
+									"    pm.expect(pm.response.status).to.have.equal(\"OK\");\r",
+									"});\r",
+									"\r",
+									"//Validate Response time is less than 2000ms\r",
+									"pm.test(\"[3.8] TC03 Validate Response Time is less Than 1000ms\", function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(1000);\r",
+									"});\r",
+									"\r",
+									"//Validate response schema\r",
+									"pm.test(\"[3.8] TC04 Validate Response Schema is Valid\", function () {\r",
+									"    var schema= {\r",
+									"  \"type\": \"object\",\r",
+									"  \"properties\": {\r",
+									"    \"id\": {\r",
+									"      \"type\": \"integer\"\r",
+									"    },\r",
+									"    \"username\": {\r",
+									"      \"type\": \"string\"\r",
+									"    },\r",
+									"    \"firstName\": {\r",
+									"      \"type\": \"string\"\r",
+									"    },\r",
+									"    \"lastName\": {\r",
+									"      \"type\": \"string\"\r",
+									"    },\r",
+									"    \"email\": {\r",
+									"      \"type\": \"string\"\r",
+									"    },\r",
+									"    \"password\": {\r",
+									"      \"type\": \"string\"\r",
+									"    },\r",
+									"    \"phone\": {\r",
+									"      \"type\": \"string\"\r",
+									"    },\r",
+									"    \"userStatus\": {\r",
+									"      \"type\": \"integer\"\r",
+									"    }\r",
+									"  },\r",
+									"  \"required\": [\r",
+									"    \"id\",\r",
+									"    \"username\",\r",
+									"    \"firstName\",\r",
+									"    \"lastName\",\r",
+									"    \"email\",\r",
+									"    \"password\",\r",
+									"    \"phone\",\r",
+									"    \"userStatus\"\r",
+									"  ]\r",
+									"}\r",
+									"pm.response.to.have.jsonSchema(schema);\r",
+									"});\r",
+									"\r",
+									"\r",
+									"//Validate Response Size is less than 2000ms\r",
+									"pm.test(\"[3.8] TC05 Validate Response Size is less than 1000ms\", function () {\r",
+									"    pm.expect(pm.response.responseSize).to.be.below(1000);\r",
+									"});\r",
+									"\r",
+									"//validate userName to be expected\r",
+									"pm.test(\"[3.8] TC06 Validate userName return in response as expected\",function(){\r",
+									"    pm.expect(pm.response.json().username).to.equal(pm.collectionVariables.get(\"userName\"));\r",
+									"});\r",
+									"\r",
+									"//validate firstName to be expected\r",
+									"pm.test(\"[3.8] TC07 Validate firstName return in response as expected\",function(){\r",
+									"    pm.expect(pm.response.json().firstName).to.equal(pm.collectionVariables.get(\"firstName\"));\r",
+									"});\r",
+									"//validate lastName to be expected\r",
+									"pm.test(\"[3.8] TC08 Validate lastName return in response as expected\",function(){\r",
+									"    pm.expect(pm.response.json().lastName).to.equal(pm.collectionVariables.get(\"lastName\"));\r",
+									"});\r",
+									"\r",
+									"//validate phone to be expected\r",
+									"pm.test(\"[3.8] TC9 Validate All Data return in response as expected\",function(){\r",
+									"    pm.expect(pm.response.json().phone).to.equal(pm.collectionVariables.get(\"phone\"));\r",
+									"});\r",
+									"\r",
+									"//validate email to be expected\r",
+									"pm.test(\"[3.8] TC10 Validate email return in response as expected\",function(){\r",
+									"    pm.expect(pm.response.json().email).to.equal(pm.collectionVariables.get(\"email\"));\r",
+									"});\r",
+									"\r",
+									"//validate password to be expected\r",
+									"pm.test(\"[3.8] TC11 Validate email return in response as expected\",function(){\r",
+									"    pm.expect(pm.response.json().email).to.equal(pm.collectionVariables.get(\"email\"));\r",
+									"});\r",
+									"\r",
+									"\r",
+									"\r",
+									"\r",
+									"\r",
+									"\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{URL}}/v2/user/{{userName}}",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"v2",
+								"user",
+								"{{userName}}"
+							]
+						},
+						"description": "##### **Get User By UserNmae**\n\n**Generated from** cURL: curl -X 'GET'  \n'[https://petstore.swagger.io/v2/user/{{userName}}'](https://petstore.swagger.io/v2/user/esraa')  \n\\-H 'accept: application/json'"
+					},
+					"response": []
+				},
+				{
+					"name": "3.9 Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"//Validate Response Status Code\r",
+									"pm.test(\"[3.9] TC01 Validate Response Code For Login\", function () {\r",
+									"    pm.expect(pm.response.code).to.have.equal(200);\r",
+									"});\r",
+									"\r",
+									"//Validate Response Message\r",
+									"pm.test(\"[3.9] TC02 Validate Response Message For Login is Ok\", function () {\r",
+									"     pm.expect(pm.response.status).to.have.equal(\"OK\");\r",
+									"});\r",
+									"\r",
+									"//Validate Response time is less than 2000ms\r",
+									"pm.test(\"[3.9] TC03 Validate Response Time is less Than 1000ms\", function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(3000);\r",
+									"});\r",
+									"\r",
+									"//Validate Response Size is less than 2000ms\r",
+									"pm.test(\"[3.9] TC04 Validate Response Size is less than 1000ms\", function () {\r",
+									"    pm.expect(pm.response.responseSize).to.be.below(1000);\r",
+									"});\r",
+									"\r",
+									"//validate Code to be expected\r",
+									"pm.test(\"[3.9] TC05 Validate Code in response as expected\",function(){\r",
+									"    pm.expect(pm.response.json().code).to.equal(200);\r",
+									"});\r",
+									"\r",
+									"//validate type to be expected\r",
+									"pm.test(\"[3.9] TC06 Validate Type in response as expected\",function(){\r",
+									"    pm.expect(pm.response.json().type).to.equal(\"unknown\");\r",
+									"});\r",
+									"\r",
+									"//validate message to be expected\r",
+									"pm.test(\"[3.9] TC07 Validate Message in response as expected\",function(){\r",
+									"    pm.expect(pm.response.json().message).to.contains(\"logged in user session:\");\r",
+									"});\r",
+									"\r",
+									"//Validate response schema\r",
+									"pm.test(\"[3.9] TC08 Validate Response Schema is Valid\", function () {\r",
+									"    var schema= {\r",
+									"  \"type\": \"object\",\r",
+									"  \"properties\": {\r",
+									"    \"code\": {\r",
+									"      \"type\": \"integer\"\r",
+									"    },\r",
+									"    \"type\": {\r",
+									"      \"type\": \"string\"\r",
+									"    },\r",
+									"    \"message\": {\r",
+									"      \"type\": \"string\"\r",
+									"    }\r",
+									"  },\r",
+									"  \"required\": [\r",
+									"    \"code\",\r",
+									"    \"type\",\r",
+									"    \"message\"\r",
+									"  ]\r",
+									"}\r",
+									"pm.response.to.have.jsonSchema(schema);\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{URL}}/v2/user/login?username={{userName}}&password={{password}}",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"v2",
+								"user",
+								"login"
+							],
+							"query": [
+								{
+									"key": "username",
+									"value": "{{userName}}"
+								},
+								{
+									"key": "password",
+									"value": "{{password}}"
+								}
+							]
+						},
+						"description": "##### **Login To System By userName And Password**\n\n**Generated from** cURL: curl -X 'GET'  \n'[https://petstore.swagger.io/v2/user/login?username={{userName}}&amp;password={{password}}'](https://petstore.swagger.io/v2/user/login?username=Oscar&password=1GeUZ67qTCSbiGP')  \n\\-H 'accept: application/json'"
+					},
+					"response": []
+				},
+				{
+					"name": "3.10 logout",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"//Validate Response Status Code\r",
+									"pm.test(\"[3.10] TC01 Validate Response Code For LogOut\", function () {\r",
+									"    pm.expect(pm.response.code).to.have.equal(200);\r",
+									"});\r",
+									"\r",
+									"//Validate Response Message\r",
+									"pm.test(\"[3.10] TC02 Validate Response Message For LogOut is Ok\", function () {\r",
+									"     pm.expect(pm.response.status).to.have.equal(\"OK\");\r",
+									"});\r",
+									"\r",
+									"//Validate Response time is less than 2000ms\r",
+									"pm.test(\"[3.10] TC03 Validate Response Time is less Than 1000ms\", function () {\r",
+									"    pm.expect(pm.response.responseTime).to.be.below(3000);\r",
+									"});\r",
+									"\r",
+									"//Validate Response Size is less than 2000ms\r",
+									"pm.test(\"[3.10] TC04 Validate Response Size is less than 1000ms\", function () {\r",
+									"    pm.expect(pm.response.responseSize).to.be.below(1000);\r",
+									"});\r",
+									"\r",
+									"//validate Code to be expected\r",
+									"pm.test(\"[3.10] TC05 Validate Code in response as expected\",function(){\r",
+									"    pm.expect(pm.response.json().code).to.equal(200);\r",
+									"});\r",
+									"\r",
+									"//validate type to be expected\r",
+									"pm.test(\"[3.10] TC06 Validate Type in response as expected\",function(){\r",
+									"    pm.expect(pm.response.json().type).to.equal(\"unknown\");\r",
+									"});\r",
+									"\r",
+									"//validate message to be expected\r",
+									"pm.test(\"[3.10] TC07 Validate Message in response as expected\",function(){\r",
+									"    pm.expect(pm.response.json().message).to.contains(\"ok\");\r",
+									"});\r",
+									"\r",
+									"//Validate response schema\r",
+									"pm.test(\"[3.10] TC08 Validate Response Schema is Valid\", function () {\r",
+									"    var schema= {\r",
+									"  \"type\": \"object\",\r",
+									"  \"properties\": {\r",
+									"    \"code\": {\r",
+									"      \"type\": \"integer\"\r",
+									"    },\r",
+									"    \"type\": {\r",
+									"      \"type\": \"string\"\r",
+									"    },\r",
+									"    \"message\": {\r",
+									"      \"type\": \"string\"\r",
+									"    }\r",
+									"  },\r",
+									"  \"required\": [\r",
+									"    \"code\",\r",
+									"    \"type\",\r",
+									"    \"message\"\r",
+									"  ]\r",
+									"}\r",
+									"pm.response.to.have.jsonSchema(schema);\r",
+									"});\r",
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						},
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "accept",
+								"value": "application/json"
+							}
+						],
+						"url": {
+							"raw": "{{URL}}/v2/user/logout",
+							"host": [
+								"{{URL}}"
+							],
+							"path": [
+								"v2",
+								"user",
+								"logout"
+							]
+						},
+						"description": "##### Logs out current logged in user session\n\n**Generated from** cURL: curl -X 'GET'  \n'[https://petstore.swagger.io/v2/user/logout'](https://petstore.swagger.io/v2/user/logout')  \n\\-H 'accept: application/json'"
+					},
+					"response": []
+				}
+			],
+			"description": "## 👤 User API\n\nManage user accounts and authentication\n\n- **Create user**\n    \n    - **POST** `/user`\n        \n    - **Request Body**: User object\n        \n    - **Response**: 200 OK​\n        \n- **Create users with array input**\n    \n    - **POST** `/user/createWithArray`\n        \n    - **Request Body**: Array of User objects\n        \n    - **Response**: 200 OK​\n        \n- **Login user**\n    \n    - **GET** `/user/login`\n        \n    - **Query Parameters**: `username`, `password`\n        \n    - **Response**: 200 OK with session token​\n        \n- **Logout user**\n    \n    - **GET** `/user/logout`\n        \n    - **Response**: 200 OK​\n        \n- **Get user by username**\n    \n    - **GET** `/user/{username}`\n        \n    - **Path Parameter**: `username`\n        \n    - **Response**: User object or 404 if not found​\n        \n- **Update user**\n    \n    - **PUT** `/user/{username}`\n        \n    - **Path Parameter**: `username`\n        \n    - **Request Body**: Updated User object\n        \n    - **Response**: 200 OK​\n        \n- **Delete user**\n    \n    - **DELETE** `/user/{username}`\n        \n    - **Path Parameter**: `username`\n        \n    - **Response**: 200 OK"
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "tagName",
+			"value": "Nlrr tpwq wwpm Qsnp"
+		},
+		{
+			"key": "petId",
+			"value": "9223372036854775625"
+		},
+		{
+			"key": "id",
+			"value": "null"
+		},
+		{
+			"key": "orderId",
+			"value": 1
+		},
+		{
+			"key": "userName",
+			"value": "Bria"
+		},
+		{
+			"key": "firstName",
+			"value": "Hailee"
+		},
+		{
+			"key": "lastName",
+			"value": "VonRueden"
+		},
+		{
+			"key": "email",
+			"value": "Esta.Turcotte10@hotmail.com"
+		},
+		{
+			"key": "password",
+			"value": "TsHN_PqdVDOxRrq"
+		},
+		{
+			"key": "phone",
+			"value": "647-888-5923"
+		}
+	]
+}
